@@ -95,18 +95,7 @@ public class Calculadora extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-        String nombre_archivo = "Resultado";
-        ArrayList key = new ArrayList();
-        ArrayList value = new ArrayList();
 
-        key.add(Datos.resultadoString);
-        value.add("1");
-
-        try { 
-            generate(nombre_archivo, key, value);
-        } catch (Exception e1) {}
-		
-		
 		
 		if(e.getSource() == sumar) {
 			
@@ -206,17 +195,18 @@ public class Calculadora extends JPanel implements ActionListener {
 	
 		if(e.getSource() == generarResultado) {
 
+			
+			Datos.resultadoString = Integer.toString(Datos.resultat);
 			//Obliga ha hacer try catch por las excepciones de los metodos
 			try {
 				GenerarDOM generar = new GenerarDOM();
 				generar.generarDocument();
+				generar.generarXML();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
-			
-			reset();
 			
 			MarcoCalculadora marco = (MarcoCalculadora) SwingUtilities.getWindowAncestor(this);
 			marco.remove(this);
@@ -237,50 +227,11 @@ public class Calculadora extends JPanel implements ActionListener {
 		Datos.numero1string=null;
 		Datos.numero2=0;
 		Datos.numero2string=null;
+		Datos.resultadoString=null;
+		Datos.resultat=0;
 
 		
 	}
 	
-    public static void generate(String name, ArrayList<String> key,ArrayList<String> value) throws Exception{
-
-        if(key.isEmpty() || value.isEmpty() || key.size()!=value.size()){
-            System.out.println("ERROR empty ArrayList");
-            return;
-        }else{
-
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            DOMImplementation implementation = builder.getDOMImplementation();
-            Document document = implementation.createDocument(null, name, null);
-            document.setXmlVersion("1.0");
-
-            //Main Node
-            Element raiz = document.getDocumentElement();
-            //Por cada key creamos un item que contendrá la key y el value
-            for(int i=0; i<key.size();i++){
-                //Item Node
-                Element itemNode = document.createElement("ITEM"); 
-                //Key Node
-                Element keyNode = document.createElement("KEY"); 
-                Text nodeKeyValue = document.createTextNode(key.get(i));
-                keyNode.appendChild(nodeKeyValue);      
-                //Value Node
-                Element valueNode = document.createElement("VALUE"); 
-                Text nodeValueValue = document.createTextNode(value.get(i));                
-                valueNode.appendChild(nodeValueValue);
-                //append keyNode and valueNode to itemNode
-                itemNode.appendChild(keyNode);
-                itemNode.appendChild(valueNode);
-                //append itemNode to raiz
-                raiz.appendChild(itemNode); //pegamos el elemento a la raiz "Documento"
-            }                
-            //Generate XML
-            Source source = new DOMSource(document);
-            //Indicamos donde lo queremos almacenar
-            Result result = new StreamResult(new java.io.File(name+".xml")); //nombre del archivo
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(source, result);
-        }
-    }
 
 }

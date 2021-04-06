@@ -38,7 +38,7 @@ public class GenerarDOM{
 		ganadores.appendChild(ganador);
 		ganador.setAttribute("vegadesResultats", "1");
 		
-		Element nombre = document.createElement("nombre");
+		Element nombre = document.createElement("Resultat");
 		nombre.appendChild(document.createTextNode(Datos.resultadoString));
 		ganador.appendChild(nombre);
 		
